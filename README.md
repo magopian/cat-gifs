@@ -140,3 +140,42 @@ For antd to use the photon-ant theme, we need to require it, for example in our
 What that does is to include some raw javascript in our reason file. That's our
 first use of javascript interop! It uses reason's adapted syntax of the
 bucklescript tool (that compiles reason or ocaml to javascript).
+
+[commit](https://github.com/magopian/cat-gifs/commit/99b2401047756457dd5b56a50d76e0e2bd049c5b)
+
+
+### And finally using a react (antd) component
+
+You can use any antd component (or react component really) by creating the
+appropriate bucklescript binding. Here's an example for the
+[Card](https://ant.design/components/card/) component:
+
+```Reason
+module Card = {
+  [@bs.module "antd"] external card : ReasonReact.reactClass = "Card";
+  let make = (~title: option(string)=?, children) =>
+    ReasonReact.wrapJsForReason(
+      ~reactClass=card,
+      ~props={"title": Js.Nullable.from_opt(title)},
+      children
+    );
+};
+```
+
+Note the `Js.Nullable.from_opt` helper that transforms the `option` 
+
+And then in your reason component:
+
+```Reason
+let component = ReasonReact.statelessComponent("App");
+
+let make = (~message, _children) => {
+  ...component,
+  render: (_self) =>
+    <div className="App">
+      ...
+      <Card title="I'm an antd card title"> (ReasonReact.stringToElement("and I'm an antd card content!")) </Card>
+      ...
+    </div>
+};
+```
