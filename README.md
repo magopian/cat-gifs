@@ -492,3 +492,16 @@ You thus have to explicitely define the type of record you're deconstructing
 -let requestGif = (reduce) =>
 +let requestGif = ({ReasonReact.reduce}) =>
 ```
+
+[commit](https://github.com/magopian/cat-gifs/commit/ca46139d203aa31266a6840d592741e395062110)
+
+
+## Adding a "more please" button
+
+Nothing really new here:
+
+- Adding a new action `MorePlease`
+- Adding the reducer case
+- Creating a `src/Button.re` module to hold the bucklescript binding to
+  `antd.Button`
+- Triggering (using `reduce`) the `MorePlease` action on click

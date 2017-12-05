@@ -5,7 +5,8 @@
 [@bs.module] external logo : string = "./logo.svg";
 
 type action =
-  | NewGif(string);
+  | NewGif(string)
+  | MorePlease;
 
 type state = {url: option(string)};
 
@@ -49,9 +50,10 @@ let make = (_children) => {
         {url: Some(url)},
         ((_self) => Js.log("Received a new GIF: " ++ url))
       )
+    | MorePlease => ReasonReact.SideEffects(requestGif)
     },
   didMount: (_self) => ReasonReact.SideEffects(requestGif),
-  render: ({state}) =>
+  render: ({state, reduce}) =>
     <div className="App">
       <div className="App-header">
         <img src=logo className="App-logo" alt="logo" />
@@ -66,6 +68,9 @@ let make = (_children) => {
             }
           )
         </Card>
+        <Button icon="reload" type_=Primary onClick=(reduce((_event) => MorePlease))>
+          (ReasonReact.stringToElement("More please!"))
+        </Button>
       </p>
     </div>
 };
