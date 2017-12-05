@@ -9,7 +9,7 @@ type action =
 
 type state = {url: option(string)};
 
-let requestGif = (reduce) =>
+let requestGif = ({ReasonReact.reduce}) =>
   Js.Promise.(
     Fetch.fetch("https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=cats")
     |> then_(Fetch.Response.json)
@@ -50,7 +50,7 @@ let make = (_children) => {
         ((_self) => Js.log("Received a new GIF: " ++ url))
       )
     },
-  didMount: (_self) => ReasonReact.SideEffects((self) => requestGif(self.reduce)),
+  didMount: (_self) => ReasonReact.SideEffects(requestGif),
   render: ({state}) =>
     <div className="App">
       <div className="App-header">

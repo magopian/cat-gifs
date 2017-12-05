@@ -444,3 +444,51 @@ structure of the json we're receiving:
 
 The decoded url is then sent to the reducer using `reduce` with the action we
 created earlier.
+
+[commit](https://github.com/magopian/cat-gifs/commit/1a4f86c23865184aacca1e5df0c8943132016da2)
+
+
+## (not so) small digression
+
+Previously, we wrote a `didMount` method that looked a bit weird. It looked
+like we could do this instead:
+
+```diff
+-  didMount: (_self) => ReasonReact.SideEffects((self) => requestGif(self.reduce)),
++  didMount: (_self) => ReasonReact.SideEffects(requestGif),
+```
+
+Indeed, `ReasonReact.SideEffects` passes `self` as a parameter to the side
+effect function. And the side effect function then uses `self.reduce`.
+
+We could then rewrite the side effect signature as:
+
+```diff
+-let requestGif = (reduce) =>
++let requestGif = ({reduce}) =>
+```
+
+This would unpack/pattern match the `reduce` field on the `self` record
+(ReasonReact components are just records).
+
+However, doing this would result in the following error message:
+
+```
+Unbound record field reduce
+```
+
+Which leads with a bit of googling to
+[records needs an explicit definition](https://reasonml.github.io/guide/language/record/#record-needs-an-explicit-definition).
+
+What this is saying is something like: "I'm sorry, you're giving me a record,
+and a field that I should access on it, but I have no clue what type of record
+it is, and thus I can't tell what's the type of this field's value. And thus
+you're toast, sorry mate."
+
+You thus have to explicitely define the type of record you're deconstructing
+(which is a `ReasonReact` component record defined in its module):
+
+```
+-let requestGif = (reduce) =>
++let requestGif = ({ReasonReact.reduce}) =>
+```
