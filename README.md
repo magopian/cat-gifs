@@ -190,3 +190,27 @@ that into its own file `Card.re`.
 
 There's no need in Reason to explicitly import modules. If there's a file with
 a `.re` extension, it'll be automatically imported and available.
+
+[comit](https://github.com/magopian/cat-gifs/commit/d815ad17d63956d62ee1c78f68d426c9e97ad3e7)
+
+
+## Making requests
+
+Let's make a request to get the cat GIF to display. We'll be using the
+[bs-fetch](https://github.com/reasonml-community/bs-fetch) low-level bindings
+to `fetch` for bucklescript:
+
+```
+$ yarn add bs-fetch
+```
+
+Then add the dependency to the `bsconfig.json` file:
+
+```diff
+   "bs-dependencies": [
+     "reason-react",
+-    "bs-jest"
++    "bs-jest",
++    "bs-fetch"
+   ],
+```
