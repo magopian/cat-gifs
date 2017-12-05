@@ -393,3 +393,54 @@ And the component `didMount` method is now:
 ```Reason
   didMount: (_self) => ReasonReact.SideEffects((self) => requestGif(self.reduce)),
 ```
+
+[commit](https://github.com/magopian/cat-gifs/commit/15f21ca85753edf94f226152049ba9419f2980ba)
+
+
+## Parsing json with bs-json
+
+The answer we're getting is json. Luckily, we can use
+[bs-json](https://github.com/reasonml-community/bs-json) encode/decode library
+for bucklescript:
+
+```
+$ yarn add bs-json
+```
+
+Then add the dependency to the `bsconfig.json` file:
+
+```diff
+   "bs-dependencies": [
+     "reason-react",
+     "bs-jest",
+-    "bs-fetch"
++    "bs-fetch",
++    "bs-json"
+   ],
+```
+
+We can now decode the `image_url` from the json response:
+
+```Reason
+let imageUrlDecoder = Json.Decode.(field("image_url", string));
+let imageUrl = Json.Decode.field("data", imageUrlDecoder, json);
+reduce(() => NewGif(imageUrl), ()); /* Send an action */
+```
+
+The `imageUrlDecoder` which decodes a string at the key `image_url` is passed
+to the decoder that decodes what is at the key `data`. This corresponds to the
+structure of the json we're receiving:
+
+```json
+{
+    "data": {
+        ...
+        "image_url": "....",
+        ...
+    },
+    "meta": ...
+}
+```
+
+The decoded url is then sent to the reducer using `reduce` with the action we
+created earlier.

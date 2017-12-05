@@ -17,7 +17,9 @@ let requestGif = (reduce) =>
          (json) =>
            {
              Js.log(json); /* Print the resulting json to the console */
-             reduce(() => NewGif("some url"), ()); /* Send an action */
+             let imageUrlDecoder = Json.Decode.(field("image_url", string));
+             let imageUrl = Json.Decode.field("data", imageUrlDecoder, json);
+             reduce(() => NewGif(imageUrl), ()); /* Send an action */
              ()
            }
            |> resolve /* Make the then_ chainable */
