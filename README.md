@@ -328,3 +328,27 @@ If we had to update one field of many, we'd do something like:
 ```Reason
 {...state, someField: someValue},
 ```
+
+[commit](https://github.com/magopian/cat-gifs/commit/78372a45b0417cbdfcf09c83248142e3ce735cf2)
+
+
+## Making requests
+
+Let's make a request to get the cat GIF to display. We'll be using the
+[bs-fetch](https://github.com/reasonml-community/bs-fetch) low-level bindings
+to `fetch` for bucklescript:
+
+```
+$ yarn add bs-fetch
+```
+
+Then add the dependency to the `bsconfig.json` file:
+
+```diff
+   "bs-dependencies": [
+     "reason-react",
+-    "bs-jest"
++    "bs-jest",
++    "bs-fetch"
+   ],
+```
