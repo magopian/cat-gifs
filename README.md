@@ -179,3 +179,14 @@ let make = (~message, _children) => {
     </div>
 };
 ```
+
+[comit](https://github.com/magopian/cat-gifs/commit/48b6c5e2950e61ebef17aa2ac6fc2b40b7ce8402)
+
+
+## Splitting the code in separate files
+
+In the previous step we created a `module` in the `app.re` file. Let's split
+that into its own file `Card.re`.
+
+There's no need in Reason to explicitly import modules. If there's a file with
+a `.re` extension, it'll be automatically imported and available.
