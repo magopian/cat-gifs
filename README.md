@@ -60,3 +60,40 @@ To pass a named parameter to a component, use the following syntax:
 While it looks like we're writing JSX, we can't just put string content and
 expect it to be transformed to an html node. We have to manually call
 `ReasonReact.stringToElement`.
+
+[commit](https://github.com/magopian/cat-gifs/commit/e9ef60b5c608d4428a9bd4fb14e921b539c83f65)
+
+
+## Using Photon and Photon-ant for great good
+
+Using a React component from an external library is doable. Simple even. Unless
+it's ant, which requires quite a bit of setup:
+
+
+```
+$ yarn add antd
+$ yarn add react-app-rewired --dev
+$ yarn add babel-plugin-import --dev
+```
+
+Then rewire the scripts in `package.json`:
+
+```diff
+-    "start": "react-scripts start",
++    "start": "react-app-rewired start --scripts-version reason-scripts",
+-    "build": "react-scripts build",
++    "build": "react-app-rewired build --scripts-version reason-scripts",
+-    "test": "react-scripts test --env=jsdom",
++    "test": "react-app-rewired test --env=jsdom --scripts-version reason-scripts",
+-    "eject": "react-scripts eject",
++    "eject": "react-app-rewired eject --scripts-version reason-scripts",
+```
+
+and add a `config-overrides.json` file:
+
+```
+module.exports = function override(config, env) {
+  // do stuff with the webpack config...
+  return config;
+};
+```
