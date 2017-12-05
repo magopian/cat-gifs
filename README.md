@@ -97,3 +97,46 @@ module.exports = function override(config, env) {
   return config;
 };
 ```
+
+[commit](https://github.com/magopian/cat-gifs/commit/403d6cfcbdbe885e6c8f980520d9187e7cf2f657)
+
+
+### Adding Photon
+
+We're not done yet, we'd like to use Photon (and photon-ant) to style our antd
+components:
+
+```
+$ yarn add photon-ant
+$ yarn add react-app-rewire-less --dev
+```
+
+Then modify the `config-overrides.js` file:
+
+```diff
+ const {injectBabelPlugin} = require('react-app-rewired');
++const rewireLess = require('react-app-rewire-less');
+
+ module.exports = function override(config, env) {
+   config = injectBabelPlugin(
+-    ['import', {libraryName: 'antd', style: 'css'}],
++    ['import', {libraryName: 'antd', style: true}],
+     config,
+   );
+
++  config = rewireLess(config, env);
++
+   return config;
+ };
+```
+
+For antd to use the photon-ant theme, we need to require it, for example in our
+`src/app.re` file:
+
+```Reason
+[%bs.raw {|require('photon-ant')|}];
+```
+
+What that does is to include some raw javascript in our reason file. That's our
+first use of javascript interop! It uses reason's adapted syntax of the
+bucklescript tool (that compiles reason or ocaml to javascript).
