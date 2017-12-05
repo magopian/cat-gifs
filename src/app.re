@@ -19,8 +19,10 @@ let make = (_children) => {
     switch action {
     /* Pattern matching on the action variant */
     | NewGif(url) =>
-      Js.log("Received a new GIF: " ++ url);
-      ReasonReact.NoUpdate
+      ReasonReact.UpdateWithSideEffects(
+        {url: Some(url)},
+        ((_self) => Js.log("Received a new GIF: " ++ url))
+      )
     },
   didMount: (self) => {
     self.reduce(() => NewGif("https://media0.giphy.com/media/3o72EX5QZ9N9d51dqo/giphy.gif"), ());

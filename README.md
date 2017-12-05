@@ -291,3 +291,40 @@ BTW, this was our second use of interop:
 ```Reason
 Js.log("Received a new GIF: " ++ url);
 ```
+
+[comit](https://github.com/magopian/cat-gifs/commit/9397ecf9bfbf101933932d84b198e8ad3b2aba08)
+
+
+## Updating the state
+
+It's all well and good to fire actions, but it would be even better if we
+reacted to them in a meaningful way (like updating the state).
+
+In the reducer, we can return one of four variant types:
+
+- ReasonReact.NoUpdate: don't do a state update.
+- ReasonReact.Update(state): update the state.
+- ReasonReact.SideEffects((self) => unit): no state update, but trigger a
+  side-effect, e.g. ReasonReact.SideEffects((_self) => Js.log("hello!")).
+- ReasonReact.UpdateWithSideEffects(state, (self) => unit): update the state,
+  then trigger a side-effect.
+
+This shows us something: what we did previously (triggering a side effect in
+the reducer) is bad. Don't do it.
+
+Let's update the code:
+
+```Reason
+    | NewGif(url) =>
+      ReasonReact.UpdateWithSideEffects(
+        {url: Some(url)},
+        ((_self) => Js.log("Received a new GIF: " ++ url))
+      )
+```
+
+This will update the state, and then trigger the side effect.
+If we had to update one field of many, we'd do something like:
+
+```Reason
+{...state, someField: someValue},
+```
