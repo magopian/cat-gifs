@@ -352,3 +352,44 @@ Then add the dependency to the `bsconfig.json` file:
 +    "bs-fetch"
    ],
 ```
+
+[commit](https://github.com/magopian/cat-gifs/commit/6bb963b8de96a47951fa4e706898887e2d440226)
+
+
+## Using Js.Promise.Fetch
+
+We can now use `Js.Promise.Fetch`:
+
+
+```Reason
+let requestGif = (reduce) =>
+  Js.Promise.(
+    Fetch.fetch("https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=cats")
+    |> then_(Fetch.Response.json)
+    |> then_(
+         (json) =>
+           {
+             Js.log(json); /* Print the resulting json to the console */
+             reduce(() => NewGif("some url"), ()); /* Send an action */
+             ()
+           }
+           |> resolve /* Make the then_ chainable */
+       )
+    |> catch(
+         (error) =>
+           {
+             Js.log(error);
+             ()
+           }
+           |> resolve
+       )
+    |> ignore /* We're not using the promise itself */
+  );
+```
+
+And the component `didMount` method is now:
+
+
+```Reason
+  didMount: (_self) => ReasonReact.SideEffects((self) => requestGif(self.reduce)),
+```

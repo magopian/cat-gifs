@@ -9,6 +9,30 @@ type action =
 
 type state = {url: option(string)};
 
+let requestGif = (reduce) =>
+  Js.Promise.(
+    Fetch.fetch("https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=cats")
+    |> then_(Fetch.Response.json)
+    |> then_(
+         (json) =>
+           {
+             Js.log(json); /* Print the resulting json to the console */
+             reduce(() => NewGif("some url"), ()); /* Send an action */
+             ()
+           }
+           |> resolve /* Make the then_ chainable */
+       )
+    |> catch(
+         (error) =>
+           {
+             Js.log(error);
+             ()
+           }
+           |> resolve
+       )
+    |> ignore /* We're not using the promise itself */
+  );
+
 let component = ReasonReact.reducerComponent("App");
 
 let make = (_children) => {
@@ -24,10 +48,7 @@ let make = (_children) => {
         ((_self) => Js.log("Received a new GIF: " ++ url))
       )
     },
-  didMount: (self) => {
-    self.reduce(() => NewGif("https://media0.giphy.com/media/3o72EX5QZ9N9d51dqo/giphy.gif"), ());
-    ReasonReact.NoUpdate
-  },
+  didMount: (_self) => ReasonReact.SideEffects((self) => requestGif(self.reduce)),
   render: ({state}) =>
     <div className="App">
       <div className="App-header">
