@@ -263,3 +263,31 @@ method:
       </p>
     </div>
 ```
+
+[comit](https://github.com/magopian/cat-gifs/commit/f83993543dc2050a3cdf08f17007f2a98efabec7)
+
+
+## Sending actions (reducing)
+
+In redux you'd use `dispatch` to send an action. In ReasonReact, it's `reduce`.
+
+Let's send the `NewGif` action (and fake it) in the `didMount` lifecycle event:
+
+```Reason
+  didMount: (self) => {
+    self.reduce(() => NewGif("https://media0.giphy.com/media/3o72EX5QZ9N9d51dqo/giphy.gif"), ());
+    ReasonReact.NoUpdate
+  },
+```
+
+This will fire a `NewGif` action with the "new" GIF url whenever the component
+is mounted.
+
+We're not doing anything other than logging a message to the console at the
+moment though.
+
+BTW, this was our second use of interop:
+
+```Reason
+Js.log("Received a new GIF: " ++ url);
+```

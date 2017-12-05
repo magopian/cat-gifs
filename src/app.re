@@ -22,6 +22,10 @@ let make = (_children) => {
       Js.log("Received a new GIF: " ++ url);
       ReasonReact.NoUpdate
     },
+  didMount: (self) => {
+    self.reduce(() => NewGif("https://media0.giphy.com/media/3o72EX5QZ9N9d51dqo/giphy.gif"), ());
+    ReasonReact.NoUpdate
+  },
   render: ({state}) =>
     <div className="App">
       <div className="App-header">
