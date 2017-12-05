@@ -190,3 +190,76 @@ that into its own file `Card.re`.
 
 There's no need in Reason to explicitly import modules. If there's a file with
 a `.re` extension, it'll be automatically imported and available.
+
+[comit](https://github.com/magopian/cat-gifs/commit/d815ad17d63956d62ee1c78f68d426c9e97ad3e7)
+
+
+## State and actions FTW
+
+It would be neat to store the GIF url in the state. And update this state using
+actions. If this makes you think of [redux](https://redux.js.org/), that's
+because it's very similar.
+
+A component that has a state will use a `reducer` to act on those action types,
+and update the state or run side effects.
+
+Let's change the `statelessComponent` to a `reducerComponent`:
+
+```Reason
+let component = ReasonReact.reducerComponent("App");
+```
+
+And define actions using a variant (with only one variant for now):
+
+```Reason
+type action =
+  | NewGif(string);
+```
+
+And finally our state:
+
+```Reason
+type state = {url: option(string)};
+```
+
+`option` is also a variant (similar to `Option` in Elm). It's either `None` or
+`Some("a string")` in our case.
+
+We use a `switch` to unpack a variant (or pattern match):
+
+```Reason
+  initialState: () => {url: None}, /* The initial state with no GIF */
+  reducer: (action, _state) => /* The reducer */
+    switch action { /* Pattern matching on the action variant */
+    | NewGif(url) =>
+      Js.log("Received a new GIF: " ++ url);
+      ReasonReact.NoUpdate
+    },
+```
+
+Note here that the last expression of a function is the return value. It must
+*NOT* end with a `;` or it would be a statement, and not an expression. In that
+case, the return value would be `()` (unit).
+
+There's another `switch` in the (new version using the `state` of the) render
+method:
+
+```Reason
+  render: ({state}) =>
+    <div className="App">
+      <div className="App-header">
+        <img src=logo className="App-logo" alt="logo" />
+        <h2> (ReasonReact.stringToElement("Cats")) </h2>
+      </div>
+      <p>
+        <Card title="Some cat GIF">
+          (
+            switch state.url {
+            | Some(url) => <img src=url alt="some cat gif" />
+            | None => <Spin />
+            }
+          )
+        </Card>
+      </p>
+    </div>
+```
